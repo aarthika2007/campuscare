@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCare - Campus Reporting System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --info-gradient: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --text-dark: #1e293b;
+            --text-gray: #64748b;
+            --border-light: #e2e8f0;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* UTILITY CLASSES */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flex-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .grid {
+            display: grid;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        /* TYPOGRAPHY */
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        p {
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        .text-sm {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        /* BUTTONS */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--bg-white);
+            color: var(--text-dark);
+            border: 2px solid var(--border-light);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary-gradient);
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .card-gradient {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* INPUTS */
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: var(--bg-white);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* NAVIGATION */
+        .navbar {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 16px 0;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .navbar-icons {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-avatar:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .menu-icon span {
+            width: 24px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* STAT CARDS */
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 24px;
+            color: white;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card h3 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            color: white;
+        }
+
+        .stat-card p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px;
+        }
+
+        /* SPLASH SCREEN */
+        .splash-screen {
+            width: 100vw;
+            height: 100vh;
+            background: var(--primary-gradient);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .logo-box {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .splash-text {
+            color: white;
+            text-align: center;
+        }
+
+        .splash-text h1 {
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+
+        .splash-text p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ROLE SELECTION */
+        .role-container {
+            min-height: 100vh;
+            background: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            gap: 40px;
+        }
+
+        .role-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .role-header h1 {
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .role-header p {
+            color: var(--text-gray);
+            font-size: 16px;
+        }
+
+        .role-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .role-card {
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .role-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-gradient);
+        }
+
+        .role-card-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .role-card h2 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        .role-card p {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .role-note {
+            background: rgba(79, 172, 254, 0.1);
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            color: #0369a1;
+            font-size: 13px;
+            text-align: center;
+            max-width: 500px;
+            margin-top: 20px;
+        }
+
+        /* FORM CONTAINER */
+        .form-container {
+            min-height: 100vh;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .form-box {
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-box h2 {
+            color: var(--text-dark);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+
+        .form-error {
+            color: #e11d48;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .form-success {
+            color: #16a34a;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        /* DASHBOARD LAYOUT */
+        .dashboard {
+            min-height: 100vh;
+            background: var(--bg-light);
+            padding-bottom: 40px;
+        }
+
+        .dashboard-header {
+            padding: 40px 0;
+            text-align: center;
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .dashboard-header h2 {
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .dashboard-header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+        }
+
+        .dashboard-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* ADMIN DASHBOARD */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: -40px 0 40px 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .stat-box {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border-left: 4px solid;
+            text-align: center;
+        }
+
+        .stat-box.solved {
+            border-left-color: #16a34a;
+        }
+
+        .stat-box.progress {
+            border-left-color: #ea580c;
+        }
+
+        .stat-box.new {
+            border-left-color: #2563eb;
+        }
+
+        .stat-box h3 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .stat-box p {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .issues-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .issue-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .issue-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .issue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+            gap: 12px;
+        }
+
+        .issue-id {
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 14px;
+            background: var(--bg-light);
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        .issue-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-priority {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        .badge-progress {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-solved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .issue-description {
+            color: var(--text-dark);
+            font-size: 14px;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .issue-category {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg-light);
+            border-radius: 6px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .issue-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .issue-note {
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--text-gray);
+            border-left: 3px solid #667eea;
+        }
+
+        /* STUDENT DASHBOARD */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .category-btn {
+            background: var(--bg-white);
+            border: 2px solid var(--border-light);
+            border-radius: 12px;
+            padding: 20px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .category-btn:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .category-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .category-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .issue-submission {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .submission-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .issue-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .issue-item {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+
+        .issue-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .issue-item-id {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .issue-item-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-submitted {
+            background: #bfdbfe;
+            color: #1e40af;
+        }
+
+        .status-in-progress {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-solved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .feedback-section {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 32px;
+        }
+
+        .feedback-title {
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .feedback-emojis {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .emoji-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            border: 2px solid var(--border-light);
+            background: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .emoji-btn:hover {
+            transform: scale(1.1);
+            border-color: #667eea;
+        }
+
+        .emoji-btn.selected {
+            background: var(--primary-gradient);
+            border-color: transparent;
+        }
+
+        .rating-section {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .star {
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .star:hover {
+            transform: scale(1.2);
+        }
+
+        .star.active {
+            color: #fbbf24;
+        }
+
+        .hot-issues {
+            background: var(--warning-gradient);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 32px;
+        }
+
+        .hot-issues-title {
+            font-weight: 700;
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+
+        .hot-issue-item {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .admin-response {
+            background: var(--success-gradient);
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 32px;
+        }
+
+        .response-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .response-text {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .congratulations {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            color: white;
+            margin-bottom: 32px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .congratulations-emoji {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .congratulations-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 768px) {
+            h1 { font-size: 28px; }
+            h2 { font-size: 20px; }
+            h3 { font-size: 16px; }
+
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .role-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .form-box {
+                padding: 24px;
+            }
+
+            .stat-card h3 {
+                font-size: 24px;
+            }
+
+            .navbar {
+                padding: 12px 0;
+            }
+
+            .navbar-content {
+                padding: 0 12px;
+            }
+
+            .navbar-title {
+                font-size: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                margin: -24px 0 32px 0;
+            }
+
+            .issue-header {
+                flex-direction: column;
+            }
+
+            .category-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .feedback-emojis {
+                justify-content: center;
+            }
+
+            .dashboard-header {
+                padding: 24px 0;
+            }
+
+            @keyframes bounce {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+        }
+
+        @media (max-width: 480px) {
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .feedback-emojis {
+                gap: 8px;
+            }
+
+            .emoji-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .star {
+                font-size: 20px;
+            }
+
+            .btn {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+
+            h1 { font-size: 24px; }
+            h2 { font-size: 18px; }
+
+            .form-box {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- PAGE 1: SPLASH SCREEN -->
+<div id="splashScreen" class="splash-screen">
+    <div class="logo-box">📋</div>
+    <div class="splash-text">
+        <h1>CampusCare</h1>
+        <p>Report • Resolve • Improve</p>
+    </div>
+    <div class="loader"></div>
+</div>
+
+<!-- PAGE 2: ROLE SELECTION -->
+<div id="roleScreen" class="role-container" style="display: none;">
+    <div class="role-header">
+        <h1>Welcome to CampusCare</h1>
+        <p>Select your role to continue</p>
+    </div>
+    <div class="role-cards">
+        <div class="role-card" onclick="navigateToAdmin()">
+            <div class="role-card-icon">👨‍💼</div>
+            <h2>Admin</h2>
+            <p>Manage and resolve issues</p>
+        </div>
+        <div class="role-card" onclick="navigateToStudent()">
+            <div class="role-card-icon">🎓</div>
+            <h2>Student</h2>
+            <p>Report campus issues</p>
+        </div>
+    </div>
+    <div class="role-note">
+        🔒 Student identity is never collected or stored.
+    </div>
+</div>
+
+<!-- PAGE 3: ADMIN REGISTRATION -->
+<div id="adminRegister" class="form-container" style="display: none;">
+    <div class="form-box">
+        <h2>Admin Registration</h2>
+        <form onsubmit="handleAdminRegister(event)">
+            <div class="form-group">
+                <label>Admin Name</label>
+                <input type="text" id="adminName" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group">
+                <label>Create Password</label>
+                <input type="password" id="adminPassword" placeholder="Create a strong password" required>
+            </div>
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+            </div>
+            <div id="registerError" class="form-error"></div>
+            <button type="submit" class="btn btn-primary btn-full">Register</button>
+        </form>
+        <p style="text-align: center; margin-top: 16px; font-size: 13px;">
+            Already registered? <a href="#" onclick="navigateToAdminLogin()" style="color: #667eea; text-decoration: none; font-weight: 600;">Login here</a>
+        </p>
+    </div>
+</div>
+
+<!-- PAGE 4: ADMIN LOGIN -->
+<div id="adminLogin" class="form-container" style="display: none;">
+    <div class="form-box">
+        <h2>Admin Login</h2>
+        <form onsubmit="handleAdminLogin(event)">
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your password" required>
+            </div>
+            <div id="loginError" class="form-error"></div>
+            <button type="submit" class="btn btn-primary btn-full">Login</button>
+        </form>
+        <p style="text-align: center; margin-top: 16px; font-size: 13px;">
+            Not registered yet? <a href="#" onclick="navigateToAdminRegister()" style="color: #667eea; text-decoration: none; font-weight: 600;">Register here</a>
+        </p>
+    </div>
+</div>
+
+<!-- PAGE 5: ADMIN DASHBOARD -->
+<div id="adminDashboard" style="display: none;">
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-title">CampusCare Admin</div>
+            <div class="navbar-icons">
+                <div class="menu-icon" onclick="toggleMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div class="profile-avatar" id="adminInitials" onclick="showLogoutOption()">AC</div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <h2>Dashboard Overview</h2>
+            <p>Manage campus issues and maintain a healthy environment</p>
+        </div>
+
+        <div class="dashboard-content container">
+            <div class="stats-grid">
+                <div class="stat-box solved">
+                    <h3 id="solvedCount">0</h3>
+                    <p>Issues Solved</p>
+                </div>
+                <div class="stat-box progress">
+                    <h3 id="progressCount">0</h3>
+                    <p>In Progress</p>
+                </div>
+                <div class="stat-box new">
+                    <h3 id="newCount">0</h3>
+                    <p>New Issues Today</p>
+                </div>
+            </div>
+
+            <!-- ISSUE MANAGEMENT -->
+            <div class="issues-section">
+                <div class="section-title">
+                    📋 Issue Management
+                </div>
+                <div id="issuesList"></div>
+            </div>
+
+            <!-- WEEKLY HEALTH -->
+            <div class="issues-section">
+                <div class="section-title">📈 Weekly Campus Health</div>
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                        <div>
+                            <p style="margin: 0; font-size: 13px;">This week</p>
+                            <h3 style="margin: 0; color: var(--text-dark);" id="healthStatus">8 issues resolved, 2 pending</h3>
+                        </div>
+                        <div style="text-align: right;">
+                            <p style="margin: 0; font-size: 13px; color: #16a34a; font-weight: 600;">📊 80% Healthy</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMIN ANNOUNCEMENT -->
+            <div class="issues-section">
+                <div class="section-title">📢 Admin Announcement</div>
+                <div class="card">
+                    <div class="form-group">
+                        <label>Post an announcement (visible to students)</label>
+                        <textarea id="announcementText" placeholder="Share updates, resolutions, and important information..."></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="postAnnouncement()">Post Announcement</button>
+                    <div id="announcementBox" style="margin-top: 16px; padding: 16px; background: var(--bg-light); border-radius: 8px; border-left: 4px solid #667eea; display: none;">
+                        <p style="margin: 0; font-size: 13px; color: var(--text-gray);">Latest Announcement:</p>
+                        <p id="announcementDisplay" style="margin: 8px 0 0 0; color: var(--text-dark); font-size: 14px; line-height: 1.5;"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PAGE 6: STUDENT DASHBOARD -->
+<div id="studentDashboard" style="display: none;">
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-title">CampusCare</div>
+            <div class="navbar-icons">
+                <div class="menu-icon" onclick="toggleMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div class="profile-avatar" id="studentInitials" onclick="showLogoutOption()">ST</div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <h2>Report an Issue</h2>
+            <p>Help us improve your campus experience</p>
+        </div>
+
+        <div class="dashboard-content container">
+            <!-- CATEGORY SELECTION -->
+            <div class="issue-submission">
+                <div class="submission-title">Select Issue Category</div>
+                <div class="category-grid">
+                    <button class="category-btn" onclick="selectCategory('cleanliness', this)">
+                        <div class="category-icon">🧹</div>
+                        <div>Cleanliness</div>
+                    </button>
+                    <button class="category-btn" onclick="selectCategory('electricity', this)">
+                        <div class="category-icon">💡</div>
+                        <div>Electricity</div>
+                    </button>
+                    <button class="category-btn" onclick="selectCategory('washroom', this)">
+                        <div class="category-icon">🚻</div>
+                        <div>Washroom</div>
+                    </button>
+                    <button class="category-btn" onclick="selectCategory('classroom', this)">
+                        <div class="category-icon">🪑</div>
+                        <div>Classroom/Lab</div>
+                    </button>
+                    <button class="category-btn" onclick="selectCategory('safety', this)">
+                        <div class="category-icon">🚨</div>
+                        <div>Safety</div>
+                    </button>
+                    <button class="category-btn" onclick="selectCategory('other', this)">
+                        <div class="category-icon">📌</div>
+                        <div>Other</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ISSUE SUBMISSION -->
+            <div class="issue-submission">
+                <div class="submission-title">Describe the Issue</div>
+                <div class="form-group">
+                    <textarea id="issueDescription" placeholder="Tell us what's wrong. Be specific so we can help better..."></textarea>
+                </div>
+                <button class="btn btn-primary btn-full" onclick="submitIssue()">Submit Issue</button>
+            </div>
+
+            <!-- SUBMITTED ISSUES -->
+            <div class="issues-section">
+                <div class="section-title">📝 My Issues</div>
+                <div id="myIssuesList" class="issue-list"></div>
+            </div>
+
+            <!-- HOT ISSUES -->
+            <div class="issues-section">
+                <div class="section-title">🔥 Hot Issues This Week</div>
+                <div class="hot-issues">
+                    <div class="hot-issues-title">Most Reported Problems</div>
+                    <div id="hotIssuesList"></div>
+                </div>
+            </div>
+
+            <!-- ADMIN RESPONSE -->
+            <div class="issues-section">
+                <div id="adminResponseBox" style="display: none;">
+                    <div class="admin-response">
+                        <div class="response-label">📢 Latest Admin Response:</div>
+                        <div class="response-text" id="adminResponseText"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ===== INITIALIZATION & NAVIGATION =====
+    window.addEventListener('DOMContentLoaded', function() {
+        initializeApp();
+        setTimeout(() => {
+            showRoleScreen();
+        }, 3000);
+    });
+
+    function initializeApp() {
+        if (!localStorage.getItem('campusCareData')) {
+            localStorage.setItem('campusCareData', JSON.stringify({
+                admin: { name: '', password: '', registered: false },
+                issues: [],
+                announcement: '',
+                nextIssueId: 1
+            }));
+        }
+    }
+
+    function showRoleScreen() {
+        document.getElementById('splashScreen').style.display = 'none';
+        document.getElementById('roleScreen').style.display = 'flex';
+    }
+
+    function navigateToAdmin() {
+        const data = JSON.parse(localStorage.getItem('campusCareData'));
+        if (data.admin.registered) {
+            document.getElementById('roleScreen').style.display = 'none';
+            document.getElementById('adminLogin').style.display = 'flex';
+        } else {
+            document.getElementById('roleScreen').style.display = 'none';
+            document.getElementById('adminRegister').style.display = 'flex';
+        }
+    }
+
+    function navigateToStudent() {
+        document.getElementById('roleScreen').style.display = 'none';
+        document.getElementById('studentDashboard').style.display = 'block';
+        loadStudentDashboard();
+    }
+
+    function navigateToAdminRegister() {
+        document.getElementById('adminLogin').style.display = 'none';
+        document.getElementById('adminRegister').style.display = 'flex';
+    }
+
+    function navigateToAdminLogin() {
+        document.getElementById('adminRegister').style.display = 'none';
+        document.getElementById('adminLogin').style.display = 'flex';
+    }
+
+    function logout() {
+        location.reload();
+    }
+
+    // ===== ADMIN REGISTRATION & LOGIN =====
+    function handleAdminRegister(event) {
+        event.preventDefault();
+        const adminName = document.getElementById('adminName').value;
+        const password = document.getElementById('adminPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const errorDiv = document.getElementById('registerError');
+
+        if (password !== confirmPassword) {
+            errorDiv.textContent = '❌ Passwords do not match';
+            return;
+        }
+
+        if (password.length < 4) {
+            errorDiv.textContent = '❌ Password must be at least 4 characters';
+            return;
+        }
+
+        const data = JSON.parse(localStorage.getItem('campusCareData'));
+        data.admin = { name: adminName, password: password, registered: true };
+        localStorage.setItem('campusCareData', JSON.stringify(data));
+
+        errorDiv.style.color = '#16a34a';
+        errorDiv.textContent = '✅ Registration successful! Redirecting...';
+
+        setTimeout(() => {
+            navigateToAdminLogin();
+        }, 1500);
+    }
+
+    function handleAdminLogin(event) {
+        event.preventDefault();
+        const password = document.getElementById('loginPassword').value;
+        const data = JSON.parse(localStorage.getItem('campusCareData'));
+        const errorDiv = document.getElementById('loginError');
+
+        if (password === data.admin.password) {
+            document.getElementById('adminLogin').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            document.getElementById('adminInitials').textContent = data.admin.name.substring(0, 2).toUpperCase();
+            loadAdminDashboard();
+        } else {
+            errorDiv.textContent = '❌ Wrong password. Try again.';
+        }
+    }
+
+    // ===== ADMIN DASHBOARD =====
+    function loadAdminDashboard() {
+        const data = JSON.parse(localStorage.getItem('campusCareData'));
+        updateStats();
+        renderIssues();
+        
+        if (data.announcement) {
+            document.getElementById('announcementBox').style.display = 'block';
+            document.getElementById('announcementDisplay').textContent = data.announcement;
+        }
+    }
+
+    function updateStats() {
+        const data = JSON.parse(localStorage.getItem('campusCareData'));
+        const issues = data.issues;
+
+        const solved = issues.filter(i => i.status === 'solved').length;
+        const inProgress = issues.filter(i => i.status === 'in-progress').length;
+        const today = new Date().toDateString();
+        const newToday = issues.filter(i => new Date(i.createdAt).toDateString() === today).length;
+
+        document.getElementById('solvedCount').textContent = solved;
+        document.getElementById('progressCount').textContent = inProgress;
+        document.getElementById('newCount').textContent = newToday;
+
+        const total = issues.length;
+        const healthPercentage = total > 0 ? Math.round((solved / total) * 100) : 100;
+        document.getElementById('healthStatus').textContent = `${solved} issues resolved, ${inProgress} pending (${healthPercentage}% healthy)`;
+    }
+
+    function renderIssues() {
+        const data = JSON.parse(localStorage.getItem('campusCareData'));
+        const issuesList = document.getElementById('issuesList');
+        issuesList.innerHTML = '';
+
+        if (data.issues.length === 0) {
+            issuesList.innerHTML = '<div class="card"><p style="text-align: center; color: var(--text-gray);">No issues reported yet. Campus is doing great! 🎉</p></div>';
+            return;
+        }
+
+        // Count issue frequencies
+        const categoryCount = {};
+        data.issues.forEach(issue => {
+            categoryCount[issue.category] = (categoryCount[issue.category] || 0) + 1;
+        });
+
+        data.issues.forEach((issue, index) => {
+            const isPriority = categoryCount[issue.category] > 2;
+            const icons = {
+                'cleanliness': '🧹',
+                'electricity': '💡',
+                'washroom': '🚻',
+                'classroom': '🪑',
+                'safety': '🚨',
+                'other': '📌'
+            };
+
+            const issueCard = document.createElement('div');
+            issueCard.className = 'issue-card';
+            issueCard.innerHTML = `
+                <div class="issue-header">
+                    <span class="issue-id">${issue.id}</span>
+                    ${isPriority ? '<span class="issue-badge badge-priority">🔥 High Priority</span>' : ''}
+                    <span class="issue-badge ${issue.status === 'solved' ? 'badge-solved' : issue.status === 'in-progress' ? 'badge-progress' : 'badge-progress'}">${issue.status.toUpperCase()}</span>
+                </div>
+                <div class="issue-category">${icons[issue.category] || '📌'} ${issue.category.charAt(0).toUpperCase() + issue.category.slice(1)}</div>
+                <div class="issue-description">${issue.description}</div>
+                <div class="issue-actions">
+                    ${issue.status !== 'in-progress' ? `<button class="btn btn-secondary btn-small" onclick="updateIssueStatus('${issue.id}', 'in-progress')">Mark In Progress</button>` : ''}
+                    ${issue.status !== 'solved' ? `<button class="btn btn-secondary btn-small" onclick="updateIssueStatus('${issue.id}', 'solved')">Mark Solved</button>` : ''}
+                </div>
+                ${issue.adminNote ? `<div class="issue-note">💬 Note: ${issue.adminNote}</div>` : ''}
+                <input type="text" id="note-${issue.id}" placeholder="Add a short note..." style="margin-top: 12px; padding: 8px; border: 1px solid var(--border-light); border-radius: 6px; font-size: 12px;">
+                <button class="btn btn-secondary btn-small" onclick="saveAdminNote('${issue.id}')" style="margin-top: 8px;">Save Note</button>
+            `;
+            issuesList.appendChild(issueCard);
+        });
+    }
+
+    function updateIssueStatus(issueId, status) {
+        const data = JSON.parse(localStorage.getItem('campusCareData'));
+        const issue = data.issues.find(i => i.id === issueId);
+        if (issue) {
+            issue.status = status;
+            localStorage.setItem('campusCareData', JSON.stringify(data));
+            loadAdminDashboard();
+        }
+    }
+
+    function saveAdminNote(issueId) {
+        const data = JSON.parse(localStorage.getItem('campusCareData'));
+        const issue = data.issues.find(i => i.id === issueId);
+        const note = document.getElementById(`note-${issueId}`).value;
+        if (issue && note) {
+            issue.adminNote = note;
+            localStorage.setItem('campusCareData', JSON.stringify(data));
+            renderIssues();
+        }
+    }
+
+    function postAnnouncement() {
+        const text = document.getElementById('announcementText').value;
+        if (!text.trim()) {
+            alert('Please write an announcement');
+            return;
+        }
+
+        const data = JSON.parse(localStorage.getItem('campusCareData'));
+        data.announcement = text;
+        localStorage.setItem('campusCareData', JSON.stringify(data));
+
+        document.getElementById('announcementBox').style.display = 'block';
+        document.getElementById('announcementDisplay').textContent = text;
+        document.getElementById('announcementText').value = '';
+    }
+
+    // ===== STUDENT DASHBOARD =====
+    let selectedCategory = null;
+
+    function selectCategory(category, element) {
+        selectedCategory = category;
+        document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    function submitIssue() {
+        const description = document.getElementById('issueDescription').value;
+
+        if (!selectedCategory) {
+            alert('Please select a category');
+            return;
+        }
+
+        if (!description.trim()) {
+            alert('Please describe the issue');
+            return;
+        }
+
+        const data = JSON.parse(localStorage.getItem('campusCareData'));
+        const issueId = `CAMP-${String(data.nextIssueId).padStart(2, '0')}`;
+        data.nextIssueId++;
+
+        const issue = {
+            id: issueId,
+            category: selectedCategory,
+            description: description,
+            status: 'submitted',
+            createdAt: new Date().toISOString(),
+            feedback: null,
+            rating: 0,
+            adminNote: ''
+        };
+
+        data.issues.push(issue);
+        localStorage.setItem('campusCareData', JSON.stringify(data));
+
+        document.getElementById('issueDescription').value = '';
+        document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+        selectedCategory = null;
+
+        alert(`✅ Issue ${issueId} submitted successfully!`);
+        loadStudentDashboard();
+    }
+
+    function loadStudentDashboard() {
+        renderMyIssues();
+        renderHotIssues();
+        renderAdminResponse();
+    }
+
+    function renderMyIssues() {
+        const data = JSON.parse(localStorage.getItem('campusCareData'));
+        const myIssuesList = document.getElementById('myIssuesList');
+        myIssuesList.innerHTML = '';
+
+        const icons = {
+            'cleanliness': '🧹',
+            'electricity': '💡',
+            'washroom': '🚻',
+            'classroom': '🪑',
+            'safety': '🚨',
+            'other': '📌'
+        };
+
+        if (data.issues.length === 0) {
+            myIssuesList.innerHTML = '<div class="card"><p style="text-align: center; color: var(--text-gray);">You haven\'t reported any issues yet.</p></div>';
+            return;
+        }
+
+        data.issues.forEach(issue => {
+            let statusClass = 'status-submitted';
+            if (issue.status === 'in-progress') statusClass = 'status-in-progress';
+            if (issue.status === 'solved') statusClass = 'status-solved';
+
+            let issueHTML = `
+                <div class="issue-item">
+                    <div class="issue-item-header">
+                        <span class="issue-item-id">${icons[issue.category]} ${issue.id}</span>
+                        <span class="issue-item-status ${statusClass}">${issue.status.toUpperCase()}</span>
+                    </div>
+                    <p style="margin: 8px 0; color: var(--text-dark); font-size: 14px;">${issue.description}</p>
+            `;
+
+            if (issue.adminNote) {
+                issueHTML += `<div class="issue-note">💬 Admin: ${issue.adminNote}</div>`;
+            }
+
+            if (issue.status === 'solved' && !issue.feedback) {
+                issueHTML += `
+                    <div style="margin-top: 16px; padding: 16px; background: var(--bg-light); border-radius: 8px;">
+                        <p style="font-weight: 600; margin-bottom: 12px; color: var(--text-dark);">How satisfied are you?</p>
+                        <div class="feedback-emojis">
+                            <button class="emoji-btn" onclick="provideFeedback('${issue.id}', 'unsatisfied')">😡</button>
+                            <button class="emoji-btn" onclick="provideFeedback('${issue.id}', 'okay')">😐</button>
+                            <button class="emoji-btn" onclick="provideFeedback('${issue.id}', 'satisfied')">😊</button>
+                        </div>
+                        <div class="rating-section">
+                            <span class="star" onclick="setRating('${issue.id}', 1)">⭐</span>
+                            <span class="star" onclick="setRating('${issue.id}', 2)">⭐</span>
+                            <span class="star" onclick="setRating('${issue.id}', 3)">⭐</span>
+                            <span class="star" onclick="setRating('${issue.id}', 4)">⭐</span>
+                            <span class="star" onclick="setRating('${issue.id}', 5)">⭐</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (issue.feedback) {
+                issueHTML += `
+                    <div style="margin-top: 16px; padding: 12px; background: #d1fae5; border-radius: 8px; text-align: center;">
+                        <p style="margin: 0; color: #065f46; font-weight: 600;">✅ Thanks for your feedback!</p>
+                    </div>
+                `;
+            }
+
+            if (issue.status === 'solved' && !issue.feedback) {
+                issueHTML += `<div class="congratulations" style="margin-top: 16px;"><div class="congratulations-emoji">🎉</div><div class="congratulations-text">Thanks for improving our campus!</div></div>`;
+            }
+
+            issueHTML += `</div>`;
+            myIssuesList.innerHTML += issueHTML;
+        });
+    }
+
+    function provideFeedback(issueId, feedback) {
+        const data = JSON.parse(localStorage.getItem('campusCareData'));
+        const issue = data.issues.find(i => i.id === issueId);
+        if (issue) {
+            issue.feedback = feedback;
+            localStorage.setItem('campusCareData', JSON.stringify(data));
+            renderMyIssues();
+        }
+    }
+
+    function setRating(issueId, rating) {
+        const data = JSON.parse(localStorage.getItem('campusCareData'));
+        const issue = data.issues.find(i => i.id === issueId);
+        if (issue) {
+            issue.rating = rating;
+            issue.feedback = 'rated';
+            localStorage.setItem('campusCareData', JSON.stringify(data));
+            renderMyIssues();
+        }
+    }
+
+    function renderHotIssues() {
+        const data = JSON.parse(localStorage.getItem('campusCareData'));
+        const categoryCount = {};
+        const icons = {
+            'cleanliness': '🧹',
+            'electricity': '💡',
+            'washroom': '🚻',
+            'classroom': '🪑',
+            'safety': '🚨',
+            'other': '📌'
+        };
+
+        data.issues.forEach(issue => {
+            categoryCount[issue.category] = (categoryCount[issue.category] || 0) + 1;
+        });
+
+        const hotIssuesList = document.getElementById('hotIssuesList');
+        hotIssuesList.innerHTML = '';
+
+        const sorted = Object.entries(categoryCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+        if (sorted.length === 0) {
+            hotIssuesList.innerHTML = '<div class="hot-issue-item">No issues reported yet!</div>';
+        } else {
+            sorted.forEach(([category, count]) => {
+                hotIssuesList.innerHTML += `
+                    <div class="hot-issue-item">${icons[category]} ${category.charAt(0).toUpperCase() + category.slice(1)}: ${count} reports</div>
+                `;
+            });
+        }
+    }
+
+    function renderAdminResponse() {
+        const data = JSON.parse(localStorage.getItem('campusCareData'));
+        if (data.announcement) {
+            document.getElementById('adminResponseBox').style.display = 'block';
+            document.getElementById('adminResponseText').textContent = data.announcement;
+        }
+    }
+
+    // ===== UTILITIES =====
+    function toggleMenu() {
+        alert('Menu functionality can be expanded');
+    }
+
+    function showLogoutOption() {
+        if (confirm('Do you want to logout?')) {
+            logout();
+        }
+    }
+</script>
+
+</body>
+</html>
